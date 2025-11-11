@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AvinivA | BIR Compliance Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background: #fff; color: #333; }
+    header { text-align: center; padding: 30px 0; }
+    header img { width: 260px; max-width: 90%; }
+    .section { max-width: 850px; margin: auto; padding: 40px 20px; }
+    h2 { text-align: center; font-weight: 700; margin-bottom: 25px; color: #4a2c8c; }
+    ul { list-style: none; padding: 0; font-size: 16px; line-height: 1.9; }
+    li { padding-left: 32px; position: relative; color: #2e8b57; font-weight: 600; margin-bottom: 12px; }
+    li:before { content: "Checkmark"; position: absolute; left: 0; color: #2e8b57; font-weight: bold; }
+    .form-input { width: 100%; padding: 14px; margin-bottom: 12px; border-radius: 5px; border: 1px solid #bbb; font-size: 16px; }
+    .btn-orange { background:#F36F21; color:#fff; border:none; padding:16px; width:100%; font-size:16px; cursor:pointer; border-radius:6px; font-weight:600; }
+    .btn-orange:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-meeting { background:#6A4CAF; color:#fff; padding:14px 24px; border-radius:6px; display:block; margin:35px auto 15px auto; border:none; cursor:pointer; font-size:16px; font-weight:600; text-decoration: none; text-align: center; width: fit-content; }
+    footer { text-align:center; padding:50px 0; font-size:14px; color:#444; }
+    .msg { text-align: center; margin: 15px 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="logo-main.png" alt="AvinivA">
+  </header>
+
+  <div class="section">
+    <h2>What You’ll Get Inside:</h2>
+    <ul>
+      <li>Step-by-step BIR audit readiness checklist</li>
+      <li>Common compliance mistakes that trigger fines — and how to avoid them</li>
+      <li>Proper document storage + digital archiving guidelines</li>
+      <li>Bonus: Odoo localization tips for faster PH reporting</li>
+    </ul>
+
+    <div id="msg" class="msg"></div>
+
+    <form id="leadForm">
+      <input type="text" id="name" class="form-input" placeholder="Full Name" required>
+      <input type="text" id="company" class="form-input" placeholder="Company Name" required>
+      <input type="email" id="email" class="form-input" placeholder="Work Email" required>
+      <input type="tel" id="phone" class="form-input" placeholder="Mobile Number" required>
+      <button type="submit" class="btn-orange" id="btn">Get the Free BIR Compliance Checklist</button>
+    </form>
+  </div>
+
+  <a href="#" class="btn-meeting" onclick="window.open('https://calendar.app.google/Ry8MNuKREhSSHiPh6','_blank','width=600,height=750')">Book a Meeting</a>
+
+  <footer>
+    <strong>AvinivA Contact:</strong><br>
+    Don Ariel C. Florencio, Head of Enterprise Sales<br>
+    WhatsApp/Viber: +63.956.598.2412<br>
+    Email: <a href="mailto:don@aviniva.com">don@aviniva.com</a>
+  </footer>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+
+    // YOUR LATEST DEPLOYED URL
+    const url = 'https://script.google.com/macros/s/AKfycbzhnnurhv44Y-zmJi5NtZ6rXFKFNcA9H0HqKl5Ugx1_3wC6Z4wlg-Da2thaB57gKoYtbg/exec';
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      msg.textContent = '';
+
+      const data = new FormData();
+      data.append('Name', document.getElementById('name').value.trim());
+      data.append('Company', document.getElementById('company').value.trim());
+      data.append('Email', document.getElementById('email').value.trim());
+      data.append('Phone', document.getElementById('phone').value.trim());
+      data.append('Timestamp', new Date().toISOString());
+
+      fetch(url, {
+        method: 'POST',
+        body: data
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.result === 'success') {
+          msg.innerHTML = '<span style="color:green;">Checkmark Submitted! Downloading PDF...</span>';
+          setTimeout(downloadPDF, 800);
+        } else {
+          throw new Error(res.message || 'Failed');
+        }
+      })
+      .catch(() => {
+        // Even if error, still download PDF
+        msg.innerHTML = '<span style="color:green;">Checkmark Submitted! Downloading PDF...</span>';
+        setTimeout(downloadPDF, 800);
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Get the Free BIR Compliance Checklist';
+      });
+    });
+
+    function downloadPDF() {
+      const link = document.createElement('a');
+      link.href = 'bir-compliance-checklist.pdf';
+      link.download = 'BIR-Compliance-Checklist.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html>
